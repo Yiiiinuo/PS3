@@ -64,6 +64,12 @@ summary(fitcheck)
 sqrt(var(data$tscorek)) #get standard deviation
 #AG#
 
+#YP#
+model2a <- lm(tscorek ~ sck, data = data)
+summary(model2a)
+model2b <- plm(tscorek ~ sck, data = data, index = c("schidkn"), model = "within")
+summary(model2b)
+#YP#
 ```
 
 3) Standard Errors
@@ -73,6 +79,9 @@ sqrt(var(data$tscorek)) #get standard deviation
 coeftest(fit2, vcov = vcovHC(fit2, type="HC3"))
 #AG#
 
+#YP#
+coeftest(model2b, vcovHC(model2b, type = "HC3"))
+#YP#
 ```
 
 4) Testing whether randomization worked (using Ws)
@@ -104,9 +113,28 @@ fit3 <- lm(tscorek ~ sck + girl + freelunk + totexpk_m, data = data)
 summary(fit3)
 #AG#
 
+#YP#
+data$sck <- as.numeric(data$sck)
+modela1 <- lm(sck ~ girl, data = data)
+summary(modela1)
+modela2 <- lm(sck ~ freelunk, data = data)
+summary(modela2)
+modela3 <- lm(sck ~ totexpk_m, data = data)
+summary(modela3)
+modela4 <- lm(sck ~ girl + freelunk + totexpk_m, data = data)
+summary(modela4)
+anova(modela4)
+
+modelc <- lm(tscorek ~ sck + girl + freelunk + totexpk_m, data = data)
+summary(modelc)
+#YP#
 ```
 
 5) Heterogeneity in Treatment Effects
 ```{r}
-
+#YP#
+data$tscorek <- as.numeric(data$tscorek)
+model5 <- plm(data = data, data$tscorek ~ sck + girl + freelunk + totexpk_m + I(sck*girl) + I(sck*freelunk) + I(sck*totexpk_m), index = c("schidkn"), model = "within")
+summary(model5) # It can run, but no way to knit it out..
+#YP#
 ```
